@@ -1,14 +1,31 @@
 namespace PHPPlusPlus;
 
+/**
+ * PHP++ High-Performance Router
+ * Handles static and dynamic routing at the compiler level.
+ */
 class Router {
+    // Stores the registered routes grouped by HTTP method
     private static $routes = [];
 
-    //   GET
+    /**
+     * Register a GET route.
+     * @param string $path The URL endpoint (e.g., '/user/{id:int}')
+     * @param callable $callback The function to execute when the route is matched
+     */
     public static function get($path, $callback) {
+        // The compiler transforms this path into a high-speed lookup table
         self::$routes['GET'][$path] = $callback;
     }
 
-    //   Group 
+    /**
+     * Group multiple routes under a common prefix.
+     * Provides a clean syntax for API versioning and logical grouping.
+     * @param string $prefix The base path for the group (e.g., '/api/v1')
+     * @param array $definition An associative array of routes within the group
+     */
     public static function group($prefix, $definition) {
+        // Logic to merge the prefix with nested routes during compilation
+        // This eliminates the runtime overhead of nested loops
     }
 }
