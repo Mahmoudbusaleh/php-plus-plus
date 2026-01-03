@@ -3,7 +3,7 @@
 use PHPPlusPlus\View;
 
 /**
- * Global helper function to render views easily
+ * Global helper to render views without calling the class directly.
  */
 if (!function_exists('view')) {
     function view($name, $data = []) {
