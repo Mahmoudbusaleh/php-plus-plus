@@ -34,6 +34,7 @@ To run P++, ensure your server environment has:
 └── index.php       # Entry point
 
 ## 🚦 Quick Start
+
 1. Define Routes
 Edit your index.php to start building:
 ```
@@ -55,6 +56,7 @@ get('/api/status', function() {
 });
 
 \PHPPlusPlus\Router::dispatch();
+
 ```
 * 2. Run
 Just point your browser to your project folder. The P++ Compiler will automatically:
