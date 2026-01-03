@@ -1,75 +1,73 @@
-# 🚀 PHP++ (P++)
-**The World's First Self-Compiling Hybrid PHP & C++ Framework.**
+# PHP++ (P++) Web Engine
+**A High-Performance PHP Framework with an Integrated C++ Core**
 
-PHP++ is not just another framework; it’s a high-performance engine designed to bridge the gap between the productivity of **PHP** and the raw power of **C++**. 
-
-
+PHP++ (P++) is a next-generation PHP framework designed for speed and efficiency. Unlike traditional frameworks, P++ leverages the power of **C++ via PHP FFI** (Foreign Function Interface) to handle core routing operations, ensuring lightning-fast performance for modern web applications.
 
 ---
 
-## 🌟 Why PHP++?
-
-Most frameworks are slow because they are built 100% on interpreted PHP. **PHP++** changes the game by offloading heavy logic (like Routing) to a compiled **C++ Turbo Core** automatically.
-
-### 🔥 Key Features:
-* **Zero-Config Auto-Build:** Just include `pp.php`, and the engine builds your folders and configures itself.
-* **C++ Turbo Routing:** Automatically detects, writes, and compiles a C++ library to handle URL matching at lightning speed.
-* **Hybrid Power:** Use standard PHP for your logic while enjoying C++ performance for the core.
-* **Minimalist Syntax:** No complex classes. Just `get()`, `post()`, and `view()`.
-* **AOT Compilation:** Pre-compiles routes to reduce overhead on every request.
+## 🚀 Key Features
+- **C++ Hybrid Core:** Static route matching is handled by a compiled C++ shared library for maximum speed.
+- **Auto-Compiler:** The engine automatically manages directories, generates `.htaccess`, and compiles the C++ source if changes are detected.
+- **Clean Routing:** Elegant API for defining routes (similar to modern standards but faster).
+- **Built-in Boilerplate:** Automatically sets up your project structure on the first run.
+- **Native Security:** Integrated `Request` and `Response` handlers for safe data processing.
 
 ---
 
-## ⚡ Quick Start (30 Seconds)
+## 🛠 Prerequisites
+To run P++, ensure your server environment has:
+1. **PHP 7.4+** or **PHP 8.x**
+2. **PHP FFI Extension** enabled (`ffi.enable=true` in `php.ini`)
+3. **g++ (GCC)** compiler installed (for the Auto-Compiler to build the C++ shared library)
+4. **Apache** with `mod_rewrite` enabled.
 
-1. **Clone the repo** into your local server.
-2. Create an `index.php` and write:
+---
 
-```php
-<?php
-require_once 'pp.php';
+## 📂 Project Structure
+```text
+├── cache/          # Compiled routes and temporary data
+├── engine/         # C++ Source (router.cpp) and Shared Object (router.so)
+├── public/         # Publicly accessible files
+├── src/            # Core P++ PHP Classes (Router, Compiler, Request, etc.)
+├── views/          # Your UI templates
+├── pp.php          # Framework Bootstrap
+└── index.php       # Entry point
 
+## 🚦 Quick Start
+1. Define Routes
+Edit your index.php to start building:
+```
+require_once __DIR__ . '/pp.php';
+
+// Simple GET route
 get('/', function() {
-    return view('welcome');
+    return "<h1>Hello from P++!</h1>";
 });
 
-get('/user/{id}', function($id) {
-    return "User Profile: " . $id;
+// Route with View and Data
+get('/profile', function() {
+    return view('welcome', ['name' => 'Mahmoud']);
 });
 
-dispatch();
+// JSON API Response
+get('/api/status', function() {
+    return \PHPPlusPlus\Response::json(['status' => 'Running', 'core' => 'C++']);
+});
 
+\PHPPlusPlus\Router::dispatch();
 ```
-## Open your browser. The engine will automatically:
+* 2. Run
+Just point your browser to your project folder. The P++ Compiler will automatically:
 
-Create views/, cache/, and engine/ folders.
+Create missing folders.
 
-Generate and compile the router.cpp into a shared object (.so).
+Compile the engine/router.cpp into a shared library.
 
-Set up your .htaccess for clean URLs.
+Generate the .htaccess for clean URLs.
+## ⚡ Performance
+The core advantage of P++ is the C++ Router Bridge. By offloading string matching to a compiled shared object (.so), we reduce the overhead of PHP's runtime for static route lookups, making it ideal for high-traffic applications.
 
-## 🛠 Under the Hood (The C++ Bridge)
-PHP++ uses FFI (Foreign Function Interface) to call compiled C++ functions directly.
-When the engine runs for the first time, our Smart Compiler executes:
-```
-g++ -fPIC -shared -o engine/router.so engine/router.cpp
-```
-* This turns your routing logic into machine code, making it thousands of times faster than traditional regex-based routers.
+## 🤝 Contribution
+Developed with ❤️ by Mahmoud Busaleh.
+Feel free to fork, report issues, and submit pull requests!
 
-
-## 🛡 Security
-    *Built-in protection for your routes and views, with an automated compiler that ensures your production environment is always optimized and locked down.
-## 🤝 Contributing
-    We are building the future of the web. If you are a C++ wizard or a PHP ninja, join us!
-
-##  How to Contribute
-We love your input! We want to make contributing to this project as easy and transparent as possible.
-
-### Documentation Update:
-If you add a new feature or make any significant changes, please:
-1.  **Update the README.md**: Add your name and a brief description of your contribution to the **Contributors Table**.
-2.  **Maintain the Style**: Ensure your entry matches the existing format in the table.
-
-Thank you for your contribution!
-
-Developed with ❤️ by Mahmoud Busaleh
