@@ -1,26 +1,25 @@
-#include <iostream>
-#include <string>
 #include <cstring>
 
-// Essential for FFI: This prevents name mangling so PHP can find the function
+/**
+ * PHP++ Engine Core
+ * Implementation of high-performance string matching.
+ */
+
 extern "C" {
-
     /**
-     * High-performance string matching for routing
-     * Returns 1 (true) if matched, 0 (false) otherwise
+     * Matches the current request URL against a target route.
+     * * @param current_url The URL from the browser (e.g., /home)
+     * @param target_route The registered route pattern
+     * @return bool True (1) if they match exactly, False (0) otherwise
      */
-    int match_route(const char* current_url, const char* target_route) {
-        // Null checks to prevent crashes
+    bool match_route(const char* current_url, const char* target_route) noexcept {
+        // Safety check: Ensure pointers are not null to prevent segmentation faults
         if (!current_url || !target_route) {
-            return 0;
+            return false;
         }
 
-        // Basic string comparison
-        // In the future, we can implement Trie Tree or Hash Map here for O(1) performance
-        if (std::strcmp(current_url, target_route) == 0) {
-            return 1;
-        }
-
-        return 0;
+        // Using standard C strcmp for maximum execution speed
+        // This is much faster than std::string comparison for raw routing
+        return (std::strcmp(current_url, target_route) == 0);
     }
 }
