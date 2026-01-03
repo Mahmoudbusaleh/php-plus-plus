@@ -37,27 +37,25 @@ To run P++, ensure your server environment has:
 
 1. Define Routes
 Edit your index.php to start building:
+
 ```
 require_once __DIR__ . '/pp.php';
-
 // Simple GET route
 get('/', function() {
     return "<h1>Hello from P++!</h1>";
 });
-
 // Route with View and Data
 get('/profile', function() {
     return view('welcome', ['name' => 'Mahmoud']);
 });
-
 // JSON API Response
 get('/api/status', function() {
     return \PHPPlusPlus\Response::json(['status' => 'Running', 'core' => 'C++']);
 });
-
 \PHPPlusPlus\Router::dispatch();
 
 ```
+
 * 2. Run
 Just point your browser to your project folder. The P++ Compiler will automatically:
 
