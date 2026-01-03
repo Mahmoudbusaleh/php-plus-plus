@@ -1,13 +1,26 @@
 <?php
-declare(strict_types=1);
-namespace PHPPlusPlus;
-use PHPPlusPlus\View;
-
 /**
- * Global helper to render views without calling the class directly.
+ * Global functional API for PHP++
+ * English comments for global standard.
  */
+
+if (!function_exists('get')) {
+    /** Register a GET route */
+    function get(string $path, $callback) {
+        \PHPPlusPlus\Router::get($path, $callback);
+    }
+}
+
 if (!function_exists('view')) {
-    function view($name, $data = []) {
-        return View::render($name, $data);
+    /** Render a PHP++ template */
+    function view(string $name, array $data = []) {
+        \PHPPlusPlus\View::render($name, $data);
+    }
+}
+
+if (!function_exists('dispatch')) {
+    /** Run the P++ Engine */
+    function dispatch() {
+        \PHPPlusPlus\Router::dispatch();
     }
 }
