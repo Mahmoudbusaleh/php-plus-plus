@@ -55,6 +55,13 @@ When the engine runs for the first time, our Smart Compiler executes:
 g++ -fPIC -shared -o engine/router.so engine/router.cpp
 ```
 * This turns your routing logic into machine code, making it thousands of times faster than traditional regex-based routers.
+
+
+## 🛡 Security
+    *Built-in protection for your routes and views, with an automated compiler that ensures your production environment is always optimized and locked down.
+## 🤝 Contributing
+    We are building the future of the web. If you are a C++ wizard or a PHP ninja, join us!
+
 ##  How to Contribute
 We love your input! We want to make contributing to this project as easy and transparent as possible.
 
@@ -65,8 +72,4 @@ If you add a new feature or make any significant changes, please:
 
 Thank you for your contribution!
 
-## 🛡 Security
-    *Built-in protection for your routes and views, with an automated compiler that ensures your production environment is always optimized and locked down.
-## 🤝 Contributing
-    We are building the future of the web. If you are a C++ wizard or a PHP ninja, join us!
 Developed with ❤️ by Mahmoud Busaleh
