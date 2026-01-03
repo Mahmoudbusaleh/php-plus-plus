@@ -10,6 +10,5 @@ class Router {
 
     //   Group 
     public static function group($prefix, $definition) {
-        // منطق دمج الروابط ببعضها
     }
 }
