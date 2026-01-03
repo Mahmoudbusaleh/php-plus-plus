@@ -32,7 +32,7 @@ To run P++, ensure your server environment has:
 ├── views/          # Your UI templates
 ├── pp.php          # Framework Bootstrap
 └── index.php       # Entry point
-
+```
 ## 🚦 Quick Start
 
 1. Define Routes
