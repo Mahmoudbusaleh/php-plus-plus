@@ -1,23 +1,32 @@
-name: PHP++ CI
+name: Build PHP++ Engine
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-    - name: Setup PHP
+    - name: Set up PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.1'
         extensions: ffi
         ini-values: ffi.enable=true
 
-    - name: Check FFI Status
-      run: php -r "echo 'FFI is ' . (extension_loaded('ffi') ? 'Enabled ✅' : 'Disabled ❌');"
+    - name: Compile C++ Router
+      run: |
+        # هذا الأمر هو اللي يصنع لك ملف الـ .so
+        g++ -fPIC -shared -o engine/router.so engine/router.cpp
+        echo "Compilation successful!"
 
-    - name: Test PHP++ Engine
-      run: php pp.php # هنا جيت هاب بيحاول يشغل محركك ويشوف فيه أخطاء أو لا
+    - name: Verify Files
+      run: |
+        ls -l engine/
