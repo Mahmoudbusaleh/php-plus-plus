@@ -3,6 +3,7 @@
 namespace PHPPlusPlus;
 
 class Router {
+    // Stores registered routes organized by HTTP method
     private static $routes = [];
 
     /**
@@ -20,17 +21,7 @@ class Router {
     }
 
     /**
-     * Internal helper to register routes with regex support
-     */
-    private static function addRoute($method, $path, $callback) {
-        // Convert {param} to regex named groups
-        $pattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '(?P<$1>[^/]+)', $path);
-        $pattern = "#^" . $pattern . "$#D";
-        self::$routes[$method][$pattern] = $callback;
-    }
-
-    /**
-     * Simple redirect helper - easier than Laravel
+     * Registers a one-line redirect
      */
     public static function redirect($from, $to) {
         self::get($from, function() use ($to) {
@@ -40,32 +31,50 @@ class Router {
     }
 
     /**
-     * Dispatches the incoming request
+     * Converts native path to regex and stores the route
+     */
+    private static function addRoute($method, $path, $callback) {
+        // Convert {param} placeholders to named regex groups
+        $pattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '(?P<$1>[^/]+)', $path);
+        $pattern = "#^" . $pattern . "$#D";
+        
+        self::$routes[$method][$pattern] = $callback;
+    }
+
+    /**
+     * Matches the current request to a registered route
      */
     public static function dispatch() {
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $method = $_SERVER['REQUEST_METHOD'];
 
+        // Check if the requested method exists in our routes
         if (!isset(self::$routes[$method])) {
-            self::notFound();
+            self::sendNotFound();
             return;
         }
 
+        // Iterate through patterns to find a match
         foreach (self::$routes[$method] as $pattern => $callback) {
             if (preg_match($pattern, $uri, $matches)) {
+                // Extract only the named parameters from the matches
                 $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
                 
                 if (is_callable($callback)) {
+                    // Execute callback with dynamic parameters
                     echo call_user_func_array($callback, $params);
                     return;
                 }
             }
         }
 
-        self::notFound();
+        self::sendNotFound();
     }
 
-    private static function notFound() {
+    /**
+     * Sends a native 404 response
+     */
+    private static function sendNotFound() {
         header("HTTP/1.0 404 Not Found");
         echo "404 Not Found - PHP++ Engine";
     }
