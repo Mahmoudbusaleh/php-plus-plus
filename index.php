@@ -3,7 +3,7 @@
 include 'pp.php';
 
 get('/', function() {
-    return view('welcome');
+    view('home'); 
 });
 
 get('/hello', function() {
