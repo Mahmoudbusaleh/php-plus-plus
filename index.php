@@ -1,19 +1,26 @@
+<?php
+
 require_once 'src/Router.php';
 use PHPPlusPlus\Router;
 
-// Static route
-Router::get('/home', function() {
-    return "Welcome Home";
+// Simple GET route returning HTML
+Router::get('/', function() {
+    return "<h1>PHP++ Home</h1><p>Simpler than Laravel, faster than Native.</p>";
 });
 
-// Dynamic route with ID
-Router::get('/user/{id}', function($id) {
-    return "User Profile. The ID is: " . $id;
+// Dynamic route handling user IDs
+Router::get('/profile/{id}', function($id) {
+    return "User Profile ID: " . $id;
 });
 
-// Dynamic route with multiple params
-Router::get('/post/{category}/{slug}', function($category, $slug) {
-    return "Category: $category | Post: $slug";
+// Simple POST route using native $_POST
+Router::post('/save', function() {
+    $data = $_POST['username'] ?? 'Anonymous';
+    return "Saved user: " . htmlspecialchars($data);
 });
 
+// One-line redirection
+Router::redirect('/old-page', '/');
+
+// Execute the routing engine
 Router::dispatch();
