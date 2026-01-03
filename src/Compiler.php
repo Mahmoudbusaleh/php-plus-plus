@@ -3,41 +3,49 @@
 namespace PHPPlusPlus;
 
 class Compiler {
-    private static $entryFile = 'index.php';
-
     /**
-     * Core build function: Handles environment setup and route optimization.
+     * The Master Build function: Creates folders, configs, and C++ source
      */
     public static function build() {
-        self::initializeEnvironment();
+        // 1. Initialize Folder Structure
+        self::createFolders(['cache', 'views', 'public', 'engine']);
 
-        if (!file_exists(self::$entryFile)) return;
+        // 2. Generate .htaccess for Clean URLs
+        self::generateHtaccess();
 
-        $content = file_get_contents(self::$entryFile);
-        
-        // Extracting routes for static mapping
-        preg_match_all('/Router::(get|post)\(\'([^\']+)\'/', $content, $matches);
+        // 3. Generate C++ Engine Source Code
+        self::generateCppEngine();
 
-        $compiled = ['GET' => [], 'POST' => []];
-        foreach ($matches[1] as $index => $method) {
-            $compiled[strtoupper($method)][$matches[2][$index]] = true;
-        }
-
-        file_put_contents('cache/routes_compiled.php', "<?php\nreturn " . var_export($compiled, true) . ";");
+        // 4. Create Initial Index and Welcome View
+        self::generateBoilerplate();
     }
 
-    /**
-     * Auto-creates folders and a sample view if they don't exist.
-     */
-    private static function initializeEnvironment() {
-        // Create cache folder for performance
-        if (!is_dir('cache')) mkdir('cache', 0777, true);
+    private static function createFolders($folders) {
+        foreach ($folders as $folder) {
+            if (!is_dir($folder)) mkdir($folder, 0777, true);
+        }
+    }
 
-        // Create views folder and a starter file for the developer
-        if (!is_dir('views')) {
-            mkdir('views', 0777, true);
-            $welcomeBody = "<h1>Welcome to PHP++</h1>\n<p>Edit this file in <code>views/welcome.php</code></p>";
-            file_put_contents('views/welcome.php', $welcomeBody);
+    private static function generateHtaccess() {
+        $content = "RewriteEngine On\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteCond %{REQUEST_FILENAME} !-d\nRewriteRule ^(.*)$ index.php [QSA,L]";
+        file_put_contents('public/.htaccess', $content);
+    }
+
+    private static function generateCppEngine() {
+        $cppCode = '#include <string.h>
+extern "C" {
+    bool match_route(const char* current_url, const char* target_route) {
+        return strcmp(current_url, target_route) == 0;
+    }
+}';
+        if (!file_exists('engine/router.cpp')) {
+            file_put_contents('engine/router.cpp', $cppCode);
+        }
+    }
+
+    private static function generateBoilerplate() {
+        if (!file_exists('views/welcome.php')) {
+            file_put_contents('views/welcome.php', "<h1>Welcome to PHP++</h1><p>Running with C++ Turbo Core.</p>");
         }
     }
 }
