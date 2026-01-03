@@ -1,31 +1,39 @@
 namespace PHPPlusPlus;
 
-/**
- * PHP++ High-Performance Router
- * Handles static and dynamic routing at the compiler level.
- */
 class Router {
-    // Stores the registered routes grouped by HTTP method
+    // Array to store registered routes
     private static $routes = [];
 
     /**
-     * Register a GET route.
-     * @param string $path The URL endpoint (e.g., '/user/{id:int}')
-     * @param callable $callback The function to execute when the route is matched
+     * Registers a GET route
+     * @param string $path
+     * @param callable $callback
      */
     public static function get($path, $callback) {
-        // The compiler transforms this path into a high-speed lookup table
+        // Storing the route in a static array for the compiler to optimize later
         self::$routes['GET'][$path] = $callback;
     }
 
     /**
-     * Group multiple routes under a common prefix.
-     * Provides a clean syntax for API versioning and logical grouping.
-     * @param string $prefix The base path for the group (e.g., '/api/v1')
-     * @param array $definition An associative array of routes within the group
+     * Dispatches the incoming request to the matched route
      */
-    public static function group($prefix, $definition) {
-        // Logic to merge the prefix with nested routes during compilation
-        // This eliminates the runtime overhead of nested loops
+    public static function dispatch() {
+        // Get the path and method using PHP native superglobals
+        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $method = $_SERVER['REQUEST_METHOD'];
+
+        // Direct lookup for O(1) performance
+        if (isset(self::$routes[$method][$uri])) {
+            $callback = self::$routes[$method][$uri];
+            
+            // Execute the callback if it is a valid PHP callable
+            if (is_callable($callback)) {
+                echo call_user_func($callback);
+            }
+        } else {
+            // Native HTTP 404 response
+            header("HTTP/1.0 404 Not Found");
+            echo "404 Not Found";
+        }
     }
 }
