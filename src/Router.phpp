@@ -1,0 +1,15 @@
+namespace PHPPlusPlus;
+
+class Router {
+    private static $routes = [];
+
+    //   GET
+    public static function get($path, $callback) {
+        self::$routes['GET'][$path] = $callback;
+    }
+
+    //   Group 
+    public static function group($prefix, $definition) {
+        // منطق دمج الروابط ببعضها
+    }
+}
