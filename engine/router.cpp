@@ -1,25 +1,58 @@
-#include <cstring>
+#include <cstring> // مكتبة معالجة النصوص بلغة C الأصلية، نستخدمها لأنها الأسرع في التعامل مع الذاكرة.
 
 /**
- * PHP++ Engine Core
- * Implementation of high-performance string matching.
+ * محرك PHP++ الأساسي (Core Engine)
+ * تنفيذ خوارزمية مطابقة النصوص عالية الأداء.
+ * * الفلسفة هنا: 
+ * نحن لا نستخدم كلاسات ++C المعقدة، بل نستخدم لغة C منخفضة المستوى (Low-level) 
+ * لضمان أن المعالج (CPU) ينفذ المقارنة بأقل عدد ممكن من الدورات (Cycles).
  */
 
 extern "C" {
     /**
-     * Matches the current request URL against a target route.
-     * * @param current_url The URL from the browser (e.g., /home)
-     * @param target_route The registered route pattern
-     * @return bool True (1) if they match exactly, False (0) otherwise
+     * دالة match_route:
+     * هي الجسر الذي يربط PHP بالمعالج مباشرة عبر تقنية FFI.
+     * * @param current_url: النص القادم من المتصفح (المسار الحالي).
+     * @param target_route: المسار المسجل في النظام للمقارنة معه.
+     * * استخدام extern "C" يمنع المترجم من تغيير اسم الدالة (Name Mangling)،
+     * مما يجعلها مرئية لـ PHP باسمها الصريح "match_route".
      */
     bool match_route(const char* current_url, const char* target_route) noexcept {
-        // Safety check: Ensure pointers are not null to prevent segmentation faults
+        
+        /**
+         * ١. فحص الأمان (Safety Barrier):
+         * في لغة ++C، التعامل مع المؤشرات (Pointers) خطير. 
+         * إذا كان أحد النصوص "فارغاً" (Null)، فإن محاولة المقارنة ستؤدي لانهيار السيرفر (Segmentation Fault).
+         * لذا نتحقق أولاً من وجود البيانات في الذاكرة.
+         */
         if (!current_url || !target_route) {
             return false;
         }
 
-        // Using standard C strcmp for maximum execution speed
-        // This is much faster than std::string comparison for raw routing
-        return (std::strcmp(current_url, target_route) == 0);
+        /**
+         * ٢. المقارنة الذرية (Atomic Comparison):
+         * نستخدم std::strcmp وهي دالة مكتوبة بلغة التجميع (Assembly) في أغلب المترجمات.
+         * * طريقة عملها:
+         * تقارن "البايتات" مباشرة في الذاكرة. بمجرد اكتشاف اختلاف في حرف واحد، 
+         * تتوقف وترجع النتيجة فوراً دون إكمال بقية النص، وهذا هو سر السرعة.
+         * * النتيجة (0) تعني أن النصوص متطابقة تماماً (Match).
+         */
+        bool is_match = (std::strcmp(current_url, target_route) == 0);
+
+        /**
+         * ٣. الكفاءة القصوى (noexcept):
+         * الدالة معلمة بـ noexcept لإخبار المترجم أنها لن تطلق أي "Exceptions".
+         * هذا يسمح للمترجم بحذف الأكواد الإضافية المسؤولة عن تتبع الأخطاء، 
+         * مما يجعل حجم الملف الثنائي (.so) أصغر وأسرع في التحميل.
+         */
+        return is_match;
     }
 }
+
+/**
+ * كيف تترجم هذا الملف (Compilation Guide):
+ * g++ -fPIC -shared -O3 -o router.so router.cpp
+ * * -fPIC: لإنتاج كود مستقل عن الموقع في الذاكرة.
+ * -shared: لتحويل الكود إلى مكتبة مشتركة يمكن لـ PHP استدعاؤها.
+ * -O3: تفعيل أعلى مستويات التحسين الرياضي والمنطقي من المترجم.
+ */
