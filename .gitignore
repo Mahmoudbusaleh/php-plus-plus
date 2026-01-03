@@ -1,0 +1,5 @@
+/cache/
+/engine/
+*.so
+*.o
+*.exe
