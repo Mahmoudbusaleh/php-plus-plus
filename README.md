@@ -33,17 +33,16 @@ Router::get('/home', function() {
 // The Compiler handles the rest for maximum performance
 Router::dispatch();
 
-Built with passion, powered by the community. Let's make history together.
 
 
-📊 Benchmarks (Standard vs PHP++)
+## 📊 Benchmarks (Standard vs PHP++)
 Feature	Standard Frameworks	PHP++ (Community Project)
 Execution Mode	Interpreted (Zend)	AOT Compiled ⚡
 Routing Delay	~5ms (Regex)	0.01ms (Static Mapping)
 Logic Processing	Dynamic	Optimized Static Branches
 Syntax	Familiar	100% Native PHP
 
-🤝 Contribution & Ownership
+## 🤝 Contribution & Ownership
 PHP++ is an Open Source initiative. While the spark was ignited by Mahmoud Busaleh, the flame belongs to the community. We invite developers, compiler engineers, and PHP enthusiasts to:
 
 Fork the project.
@@ -54,14 +53,14 @@ Propose new features.
 
 Help us rewrite the rules of PHP performance
 
-🛠️ Project Identity & Credits
+## 🛠️ Project Identity & Credits
 Project Founder & Lead Architect: Mahmoud Busaleh
 Status: Active Development / Open for Contributions
 Goal: To make PHP the fastest web language on the planet.
 
-💡 The Vision.
+## 💡 The Vision.
 PHP++ is an ambitious open-source project initiated by Mahmoud Busaleh. The goal is to revolutionize the PHP ecosystem by introducing a High-Performance Compiler that transforms standard PHP code into optimized machine-level execution.
 
 We believe that developers shouldn't have to choose between "Ease of Use" and "Raw Power". With PHP++, you get both.
 
-Built with passion, powered by the community. Let's make history together.
+## Built with passion, powered by the community. Let's make history together.
