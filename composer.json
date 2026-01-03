@@ -1,0 +1,17 @@
+{
+    "name": "mahmoudbusaleh/php-plus-plus",
+    "description": "A high-performance hybrid PHP/C++ web framework using FFI and AOT compilation.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mahmoud Busaleh"
+        }
+    ],
+    "require": {
+        "php": ">=7.4"
+    },
+    "autoload": {
+        "files": ["pp.php"]
+    }
+}
