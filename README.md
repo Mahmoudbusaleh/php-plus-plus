@@ -4,6 +4,10 @@
 PHP++ is a minimalist, high-performance framework designed for developers who are tired of the "Magic" and "Overhead" of modern PHP frameworks. We believe that PHP is powerful enough without being hidden behind layers of abstractions.
 
 ---
+#Routing
+Laravel Routing: 5ms | PHP++ Routing: 0.01ms
+---
+
 
 ## 🧠 The Philosophy
 The industry has moved towards making PHP look like another language. **PHP++** is a move in the opposite direction. 
