@@ -1,4 +1,4 @@
-# ⚡ PHP++ (P++) Web Engine
+# ⚡ PHP++ Web Engine
 **The World's First Hybrid PHP Framework with a Compiled C++ Core.**
 
 [![PHP Version](https://img.shields.io/badge/php-%3E%3D7.4-8892bf.svg)](https://php.net)
