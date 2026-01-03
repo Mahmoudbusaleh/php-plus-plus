@@ -63,4 +63,13 @@ Help us rewrite the rules of PHP performance.
 Router::dispatch();
 
 Built with passion, powered by the community. Let's make history together.
-* Ahead-of-Time (AOT) Compilation for routes.
+##  * Ahead-of-Time (AOT) Compilation for routes.
+
+## 🧠 Smart Auto-Compile (Zero Setup)
+PHP++ features an **Intelligent Monitoring System**. You don't need to run build commands manually. 
+
+1. **Change** your routes in `index.php`.
+2. **Refresh** your browser.
+3. **Done!** The Engine detects changes and re-compiles the entire routing map in milliseconds.
+
+> Check your Browser Headers (`X-PHP-Plus-Plus-Status`) to see the compiler speed in action!
