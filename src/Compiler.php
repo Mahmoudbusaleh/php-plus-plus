@@ -1,68 +1,106 @@
 <?php
 declare(strict_types=1);
+
 namespace PHPPlusPlus;
 
+/**
+ * PHP++ Auto-Compiler & Environment Setup
+ * Automatically manages directories, C++ compilation, and boilerplate generation.
+ */
 class Compiler {
     /**
-     * The Master Build function: Fully automated environment setup
+     * Master Build: Fully automated environment setup
+     * This is triggered by the Router when changes are detected.
      */
-    public static function build() {
-        // 1. Create necessary folders
+    public static function build(): void {
+        // 1. Create necessary directory structure
         self::createFolders(['cache', 'views', 'public', 'engine']);
 
-        // 2. Generate configuration files
+        // 2. Generate server configuration (.htaccess)
         self::generateHtaccess();
 
-        // 3. Handle C++ Engine (Source + Automatic Compilation)
+        // 3. Handle C++ Engine (Source generation and auto-compilation)
         self::handleCppEngine();
 
-        // 4. Create starter files
+        // 4. Generate initial boilerplate for the developer
         self::generateBoilerplate();
     }
 
-    private static function createFolders($folders) {
+    /**
+     * Ensures all required framework folders exist
+     */
+    private static function createFolders(array $folders): void {
         foreach ($folders as $folder) {
-            if (!is_dir($folder)) mkdir($folder, 0777, true);
-        }
-    }
-
-    private static function handleCppEngine() {
-        $cppFile = 'engine/router.cpp';
-        $soFile = 'engine/router.so';
-
-        $cppCode = '#include <string.h>
-extern "C" {
-    bool match_route(const char* current_url, const char* target_route) {
-        return strcmp(current_url, target_route) == 0;
-    }
-}';
-
-        // Write C++ source if it doesn't exist
-        if (!file_exists($cppFile)) {
-            file_put_contents($cppFile, $cppCode);
-        }
-
-        // FEATURE: Automatic C++ Compilation
-        // If the compiled library doesn't exist, try to compile it using the system's g++
-        if (!file_exists($soFile)) {
-            // Check if g++ is installed on the server
-            $checkGpp = shell_exec('which g++');
-            if ($checkGpp) {
-                shell_exec("g++ -fPIC -shared -o $soFile $cppFile");
+            if (!is_dir($folder)) {
+                mkdir($folder, 0777, true);
             }
         }
     }
 
-    private static function generateHtaccess() {
-        $content = "RewriteEngine On\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteCond %{REQUEST_FILENAME} !-d\nRewriteRule ^(.*)$ index.php [QSA,L]";
-        if (!file_exists('public/.htaccess')) {
-            file_put_contents('public/.htaccess', $content);
+    /**
+     * Manages the C++ Shared Library life cycle
+     */
+    private static function handleCppEngine(): void {
+        $cppFile = 'engine/router.cpp';
+        $soFile = 'engine/router.so';
+
+        // Optimized C++ Code for FFI
+        $cppCode = '#include <string.h>
+extern "C" {
+    /**
+     * High-speed string matching for static routes.
+     * Returns true (1) if current_url matches target_route exactly.
+     */
+    bool match_route(const char* current_url, const char* target_route) {
+        if (!current_url || !target_route) return false;
+        return strcmp(current_url, target_route) == 0;
+    }
+}';
+
+        // Write or update C++ source if missing
+        if (!file_exists($cppFile)) {
+            file_put_contents($cppFile, $cppCode);
+        }
+
+        // AUTO-COMPILATION LOGIC:
+        // Compile if .so is missing OR if .cpp source was recently modified
+        if (!file_exists($soFile) || filemtime($cppFile) > filemtime($soFile)) {
+            // Check if g++ exists on the host system
+            $hasGpp = (bool) shell_exec('which g++');
+            if ($hasGpp) {
+                // Compile with -fPIC for shared library and -O3 for maximum optimization
+                shell_exec("g++ -fPIC -shared -O3 -o $soFile $cppFile");
+            }
         }
     }
 
-    private static function generateBoilerplate() {
-        if (!file_exists('views/welcome.php')) {
-            file_put_contents('views/welcome.php', "<h1>Welcome to PHP++</h1><p>Running with Auto-Compiled C++ Core.</p>");
+    /**
+     * Generates .htaccess for clean URLs (Front Controller Pattern)
+     */
+    private static function generateHtaccess(): void {
+        $path = 'public/.htaccess';
+        $content = "RewriteEngine On\n" .
+                   "RewriteCond %{REQUEST_FILENAME} !-f\n" .
+                   "RewriteCond %{REQUEST_FILENAME} !-d\n" .
+                   "RewriteRule ^(.*)$ index.php [QSA,L]";
+
+        if (!file_exists($path)) {
+            file_put_contents($path, $content);
+        }
+    }
+
+    /**
+     * Generates starter files to help the developer begin immediately
+     */
+    private static function generateBoilerplate(): void {
+        $viewPath = 'views/welcome.php';
+        if (!file_exists($viewPath)) {
+            $html = "\n" .
+                    "<div style='font-family: sans-serif; text-align: center; margin-top: 50px;'>\n" .
+                    "  <h1>Welcome to PHP++</h1>\n" .
+                    "  <p>Status: <span style='color: green;'>Running with Auto-Compiled C++ Core</span></p>\n" .
+                    "</div>";
+            file_put_contents($viewPath, $html);
         }
     }
 }
