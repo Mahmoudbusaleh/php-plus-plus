@@ -1,17 +1,19 @@
-<?php
-
 require_once 'src/Router.php';
-
 use PHPPlusPlus\Router;
 
-// Registering routes using standard anonymous functions (Closures)
+// Static route
 Router::get('/home', function() {
-    return "<h1>Welcome to PHP++</h1>";
+    return "Welcome Home";
 });
 
-Router::get('/about', function() {
-    return "This is a high-performance compiled PHP project.";
+// Dynamic route with ID
+Router::get('/user/{id}', function($id) {
+    return "User Profile. The ID is: " . $id;
 });
 
-// Start the routing process
+// Dynamic route with multiple params
+Router::get('/post/{category}/{slug}', function($category, $slug) {
+    return "Category: $category | Post: $slug";
+});
+
 Router::dispatch();
