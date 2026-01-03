@@ -1,17 +1,10 @@
 {
     "name": "mahmoudbusaleh/php-plus-plus",
-    "description": "A high-performance and simple PHP web framework",
-    "type": "library",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Mahmoud Busaleh"
-        }
-    ],
-    "require": {
-        "php": ">=7.4"
-    },
+    "description": "A simplified PHP framework wrapper",
     "autoload": {
-        "files": ["pp.php"]
-    }
+        "psr-4": {
+            "PhpPlusPlus\\": "src/"
+        }
+    },
+    "require": {}
 }
