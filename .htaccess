@@ -1,15 +1,14 @@
-# 1. Start the Rewrite Engine
+# 1. منع استعراض الملفات داخل المجلدات لأغراض أمنية
+Options -Indexes
+
+# 2. تفعيل محرك إعادة الكتابة
 RewriteEngine On
 
-# 2. Base path (Optional, change if project is in a subfolder)
-# RewriteBase /
-
-# 3. Check if the request is NOT for a real file (like image.jpg or style.css)
+# 3. التأكد من أن الطلب ليس لملف حقيقي (صورة، CSS، إلخ)
 RewriteCond %{REQUEST_FILENAME} !-f
-
-# 4. Check if the request is NOT for a real directory
+# 4. التأكد من أن الطلب ليس لمجلد حقيقي
 RewriteCond %{REQUEST_FILENAME} !-d
 
-# 5. Redirect everything else to index.php
-# This allows P++ Router to handle the URL
+# 5. توجيه كل شيء لملف index.php مع الحفاظ على البيانات (QSA)
+# الـ [L] تعني أن هذا هو آخر سطر يتم تنفيذه
 RewriteRule ^(.*)$ index.php [QSA,L]
