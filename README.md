@@ -63,3 +63,4 @@ Help us rewrite the rules of PHP performance.
 Router::dispatch();
 
 Built with passion, powered by the community. Let's make history together.
+* Ahead-of-Time (AOT) Compilation for routes.
