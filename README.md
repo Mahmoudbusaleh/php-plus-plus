@@ -29,6 +29,7 @@ use PHPPlusPlus\Router;
 Router::get('/home', function() {
     return "<h1>Welcome to the PHP++ Revolution!</h1>";
 });
+```
 📊 Benchmarks (Standard vs PHP++)
 Feature	Standard Frameworks	PHP++ (Community Project)
 Execution Mode	Interpreted (Zend)	AOT Compiled ⚡
