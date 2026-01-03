@@ -1,0 +1,15 @@
+# 1. Start the Rewrite Engine
+RewriteEngine On
+
+# 2. Base path (Optional, change if project is in a subfolder)
+# RewriteBase /
+
+# 3. Check if the request is NOT for a real file (like image.jpg or style.css)
+RewriteCond %{REQUEST_FILENAME} !-f
+
+# 4. Check if the request is NOT for a real directory
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# 5. Redirect everything else to index.php
+# This allows P++ Router to handle the URL
+RewriteRule ^(.*)$ index.php [QSA,L]
