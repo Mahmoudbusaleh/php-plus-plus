@@ -42,26 +42,34 @@ class Router {
     }
 
     /**
-     * Matches the current request to a registered route
+     * Smart Dispatcher: Auto-checks for changes and executes routes
      */
     public static function dispatch() {
+        $cacheFile = 'cache/routes_compiled.php';
+        $sourceFile = 'index.php';
+
+        // FEATURE: Zero-Config Auto-Build
+        // If the cache is missing or index.php was modified, re-compile instantly
+        if (!file_exists($cacheFile) || (file_exists($sourceFile) && filemtime($sourceFile) > filemtime($cacheFile))) {
+            // Check if Compiler class exists before calling to prevent errors
+            if (class_exists(__NAMESPACE__ . '\\Compiler')) {
+                Compiler::build();
+            }
+        }
+
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $method = $_SERVER['REQUEST_METHOD'];
 
-        // Check if the requested method exists in our routes
         if (!isset(self::$routes[$method])) {
             self::sendNotFound();
             return;
         }
 
-        // Iterate through patterns to find a match
         foreach (self::$routes[$method] as $pattern => $callback) {
             if (preg_match($pattern, $uri, $matches)) {
-                // Extract only the named parameters from the matches
                 $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
                 
                 if (is_callable($callback)) {
-                    // Execute callback with dynamic parameters
                     echo call_user_func_array($callback, $params);
                     return;
                 }
