@@ -1,25 +1,50 @@
 <?php
 declare(strict_types=1);
+
 namespace PHPPlusPlus;
 
+/**
+ * نظام عرض الواجهات (View Engine) - مشروع PHP++
+ * * هذا الكلاس هو المسؤول عن استدعاء ملفات الـ HTML/PHP من مجلد views،
+ * وتجهيز البيانات لتعرض بداخلها بشكل مرتب ونظيف.
+ */
 class View {
     /**
-     * Renders a PHP view file from the views directory.
+     * دالة معالجة العرض (Render):
+     * تقوم بالبحث عن ملف الواجهة وتجهيز المتغيرات بداخله.
+     * * @param string $view اسم ملف الواجهة (بدون .php)
+     * @param array $data مصفوفة البيانات المراد عرضها (مثل أسماء المستخدمين أو عناوين المقالات)
      */
     public static function render($view, $data = []) {
+        // ١. تحديد المسار الكامل للملف:
+        // نفترض أن جميع الواجهات موجودة داخل مجلد views في جذر المشروع
         $path = "views/{$view}.php";
 
+        // ٢. التأكد من وجود الملف قبل محاولة فتحه:
+        // إذا الملف مو موجود، نعطي خطأ 500 (خطأ داخلي في السيرفر) ونوقف التنفيذ
         if (!file_exists($path)) {
             header("HTTP/1.0 500 Internal Server Error");
-            die("PHP++ Error: View [{$view}] not found in /views folder.");
+            die("خطأ في محرك PHP++: الواجهة [{$view}] غير موجودة في مجلد views.");
         }
 
-        // Makes array keys available as variables inside the view
+        /**
+         * ٣. سحر استخراج البيانات (Extracting):
+         * دالة extract تقوم بتحويل مفاتيح المصفوفة إلى متغيرات حقيقية.
+         * مثال: ['title' => 'Welcome'] تتحول لمتغير اسمه $title داخل ملف الواجهة.
+         */
         extract($data);
 
-        // Capture output to return it as a string
+        /**
+         * ٤. تقنية التخزين المؤقت للمخرجات (Output Buffering):
+         * نستخدم ob_start عشان نخلي الـ PHP "يمسك" الكود وما يرسله للمتصفح فوراً.
+         * هذا يخلينا نقدر نعالج الصفحة كـ "نص" (String) ونرجعها للراوتر بكل سلاسة.
+         */
         ob_start();
+        
+        // تضمين ملف الواجهة (هنا يتحول كود الـ PHP إلى HTML)
         include $path;
+        
+        // جلب المحتوى المحفوظ في الذاكرة المؤقتة، وتنظيف الذاكرة، ثم إرجاعه كـ String
         return ob_get_clean();
     }
 }
