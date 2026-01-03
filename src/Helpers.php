@@ -1,7 +1,7 @@
 <?php
 /**
- * Global functional API for PHP++
- * English comments for global standard.
+ * PHP++ Global Helpers
+ * English comments for global standards.
  */
 
 if (!function_exists('get')) {
@@ -12,14 +12,15 @@ if (!function_exists('get')) {
 }
 
 if (!function_exists('view')) {
-    /** Render a PHP++ template */
+    /** Render a P++ view template */
     function view(string $name, array $data = []) {
+        // Here we call the View class you just verified in src/View.php
         \PHPPlusPlus\View::render($name, $data);
     }
 }
 
 if (!function_exists('dispatch')) {
-    /** Run the P++ Engine */
+    /** Launch the routing engine */
     function dispatch() {
         \PHPPlusPlus\Router::dispatch();
     }
