@@ -1,33 +1,46 @@
 <?php
 declare(strict_types=1);
+
 namespace PHPPlusPlus;
 
 /**
  * PHP++ High-Performance Router
- * Integrated with C++ Engine via FFI (Foreign Function Interface)
+ * * A lightweight, ultra-fast routing engine that supports AOT compilation 
+ * and optional C++ integration via FFI for maximum efficiency.
+ * * @package PHPPlusPlus
+ * @author Mahmoud Busaleh
  */
 class Router {
-    // Array to hold the routes registered by the developer
-    private static $routes = [];
+    /** @var array Holds all registered routes organized by HTTP method */
+    private static array $routes = [];
 
     /**
-     * Registers a GET HTTP route
+     * Register a GET route
+     * * @param string $path
+     * @param mixed $callback
+     * @return void
      */
-    public static function get($path, $callback) {
+    public static function get(string $path, $callback): void {
         self::addRoute('GET', $path, $callback);
     }
 
     /**
-     * Registers a POST HTTP route
+     * Register a POST route
+     * * @param string $path
+     * @param mixed $callback
+     * @return void
      */
-    public static function post($path, $callback) {
+    public static function post(string $path, $callback): void {
         self::addRoute('POST', $path, $callback);
     }
 
     /**
-     * Helper for quick URL redirection
+     * Quick URL redirection helper
+     * * @param string $from
+     * @param string $to
+     * @return void
      */
-    public static function redirect($from, $to) {
+    public static function redirect(string $from, string $to): void {
         self::get($from, function() use ($to) {
             header("Location: $to");
             exit;
@@ -35,10 +48,14 @@ class Router {
     }
 
     /**
-     * Internal method to process and store routes
+     * Internal method to process and store routes using Regex patterns
+     * * @param string $method
+     * @param string $path
+     * @param mixed $callback
+     * @return void
      */
-    private static function addRoute($method, $path, $callback) {
-        // Regex conversion for dynamic parameters like {id}
+    private static function addRoute(string $method, string $path, $callback): void {
+        // Convert dynamic parameters like {id} into named capture groups for Regex
         $pattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '(?P<$1>[^/]+)', $path);
         $pattern = "#^" . $pattern . "$#D";
         
@@ -46,45 +63,45 @@ class Router {
     }
 
     /**
-     * The heart of PHP++: Matches the request using C++ Engine if available
+     * Dispatches the incoming request to the matching route.
+     * Includes AOT check and C++ Engine matching optimization.
+     * * @return void
      */
-    public static function dispatch() {
+    public static function dispatch(): void {
         $cacheFile = 'cache/routes_compiled.php';
         $sourceFile = 'index.php';
 
-        // --- PHASE 1: AOT COMPILATION CHECK ---
-        // Automatically re-builds the project if changes are detected in index.php
+        // --- PHASE 1: AOT (Ahead-Of-Time) COMPILATION CHECK ---
+        // Automatically re-build the routing cache if index.php has been modified
         if (!file_exists($cacheFile) || (file_exists($sourceFile) && filemtime($sourceFile) > filemtime($cacheFile))) {
             if (class_exists(__NAMESPACE__ . '\\Compiler')) {
                 $start = microtime(true);
+                // @phpstan-ignore-next-line
                 Compiler::build();
-                $end = microtime(true);
-                
-                $duration = round(($end - $start) * 1000, 4);
+                $duration = round((microtime(true) - $start) * 1000, 4);
                 header("X-PHP-Plus-Plus-Status: Re-compiled in {$duration}ms");
             }
         }
 
-        // --- PHASE 2: C++ ENGINE INTEGRATION (EXPERIMENTAL) ---
-        // Attempt to use the C++ Shared Library for lightning-fast matching
+        // --- PHASE 2: C++ ENGINE INTEGRATION (via FFI) ---
         $ffi = null;
-        $cppLibrary = 'engine/router.so'; // Path to the compiled C++ binary
+        $cppLibrary = __DIR__ . '/engine/router.so'; 
 
-        if (file_exists($cppLibrary) && extension_loaded('ffi')) {
+        if (extension_loaded('ffi') && file_exists($cppLibrary)) {
             try {
-                // Bridge between PHP and C++: Define the C function signature
+                // Initialize the C++ bridge with the match_route function signature
                 $ffi = \FFI::cdef(
                     "bool match_route(const char* current_url, const char* target_route);", 
                     $cppLibrary
                 );
             } catch (\Exception $e) {
-                // Fallback to native PHP if FFI fails
+                // Fallback to native PHP routing if FFI fails
                 $ffi = null;
             }
         }
 
-        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        $method = $_SERVER['REQUEST_METHOD'];
+        $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+        $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
         if (!isset(self::$routes[$method])) {
             self::sendNotFound();
@@ -93,39 +110,4 @@ class Router {
 
         // --- PHASE 3: ROUTE MATCHING ---
         foreach (self::$routes[$method] as $pattern => $callback) {
-            $isMatched = false;
-
-            // If C++ Engine is loaded, use it for O(1) string comparison
-            if ($ffi !== null && strpos($pattern, '(?P<') === false) {
-                // Strip regex characters for pure string matching in C++
-                $cleanPattern = trim($pattern, '#^$D');
-                if ($ffi->match_route($uri, $cleanPattern)) {
-                    $isMatched = true;
-                }
-            } else {
-                // Fallback to standard Regex for dynamic routes {id}
-                if (preg_match($pattern, $uri, $matches)) {
-                    $isMatched = true;
-                    $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
-                }
-            }
-
-            if ($isMatched) {
-                if (is_callable($callback)) {
-                    echo call_user_func_array($callback, $params ?? []);
-                    return;
-                }
-            }
-        }
-
-        self::sendNotFound();
-    }
-
-    /**
-     * Renders the final 404 Not Found response
-     */
-    private static function sendNotFound() {
-        header("HTTP/1.0 404 Not Found");
-        echo "404 Not Found - PHP++ C++ Powered Engine";
-    }
-}
+            $isMatched =
