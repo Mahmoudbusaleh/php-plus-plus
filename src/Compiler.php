@@ -5,29 +5,44 @@ namespace PHPPlusPlus;
 
 /**
  * PHP++ Auto-Compiler & Environment Setup
- * Automatically manages directories, C++ compilation, and boilerplate generation.
+ * Master class responsible for AOT compilation and structural integrity.
+ * @package PHPPlusPlus
+ * @author Mahmoud Busaleh
  */
 class Compiler {
     /**
-     * Master Build: Fully automated environment setup
-     * This is triggered by the Router when changes are detected.
+     * Master Build: Synchronizes the environment.
+     * Triggered automatically by the Router to ensure the engine is ready.
      */
     public static function build(): void {
-        // 1. Create necessary directory structure
-        self::createFolders(['cache', 'views', 'public', 'engine']);
+        // Use absolute root path to avoid issues with nested directories
+        $root = dirname(__DIR__);
 
-        // 2. Generate server configuration (.htaccess)
-        self::generateHtaccess();
+        // 1. Ensure core directory structure exists
+        self::createFolders([
+            $root . '/cache', 
+            $root . '/views', 
+            $root . '/public', 
+            $root . '/engine'
+        ]);
 
-        // 3. Handle C++ Engine (Source generation and auto-compilation)
-        self::handleCppEngine();
+        // 2. Setup Server Configuration
+        self::generateHtaccess($root);
 
-        // 4. Generate initial boilerplate for the developer
-        self::generateBoilerplate();
+        // 3. Handle C++ Engine (Source & Binary)
+        self::handleCppEngine($root);
+
+        // 4. Generate Starter Boilerplate
+        self::generateBoilerplate($root);
+        
+        // 5. Initialize Cache file if missing to prevent Router errors
+        if (!file_exists($root . '/cache/routes_compiled.php')) {
+            file_put_contents($root . '/cache/routes_compiled.php', "<?php\n return [];");
+        }
     }
 
     /**
-     * Ensures all required framework folders exist
+     * Creates directories with correct permissions
      */
     private static function createFolders(array $folders): void {
         foreach ($folders as $folder) {
@@ -38,47 +53,47 @@ class Compiler {
     }
 
     /**
-     * Manages the C++ Shared Library life cycle
+     * Manages the C++ Engine lifecycle (Source code and Shared Object)
      */
-    private static function handleCppEngine(): void {
-        $cppFile = 'engine/router.cpp';
-        $soFile = 'engine/router.so';
+    private static function handleCppEngine(string $root): void {
+        $cppFile = $root . '/engine/router.cpp';
+        $soFile = $root . '/engine/router.so';
 
-        // Optimized C++ Code for FFI
-        $cppCode = '#include <string.h>
+        // Optimized C++ Source with strict C linkage for FFI
+        $cppCode = '#include <cstring>
 extern "C" {
     /**
-     * High-speed string matching for static routes.
-     * Returns true (1) if current_url matches target_route exactly.
+     * High-speed string matching for PHP++ Engine.
+     * Uses C-style strings for maximum compatibility with PHP FFI.
      */
-    bool match_route(const char* current_url, const char* target_route) {
+    bool match_route(const char* current_url, const char* target_route) noexcept {
         if (!current_url || !target_route) return false;
-        return strcmp(current_url, target_route) == 0;
+        return std::strcmp(current_url, target_route) == 0;
     }
 }';
 
-        // Write or update C++ source if missing
+        // Write source only if it doesn't exist to allow manual user edits
         if (!file_exists($cppFile)) {
             file_put_contents($cppFile, $cppCode);
         }
 
-        // AUTO-COMPILATION LOGIC:
-        // Compile if .so is missing OR if .cpp source was recently modified
+        // Re-compile if .so is missing OR if source was updated
         if (!file_exists($soFile) || filemtime($cppFile) > filemtime($soFile)) {
-            // Check if g++ exists on the host system
+            // Check for g++ compiler availability
             $hasGpp = (bool) shell_exec('which g++');
             if ($hasGpp) {
-                // Compile with -fPIC for shared library and -O3 for maximum optimization
-                shell_exec("g++ -fPIC -shared -O3 -o $soFile $cppFile");
+                // Compile with PIC (Position Independent Code) and O3 (Maximum Optimization)
+                $cmd = "g++ -fPIC -shared -O3 -o " . escapeshellarg($soFile) . " " . escapeshellarg($cppFile);
+                shell_exec($cmd);
             }
         }
     }
 
     /**
-     * Generates .htaccess for clean URLs (Front Controller Pattern)
+     * Generates .htaccess for the Front Controller pattern
      */
-    private static function generateHtaccess(): void {
-        $path = 'public/.htaccess';
+    private static function generateHtaccess(string $root): void {
+        $path = $root . '/.htaccess'; // Usually at the project root
         $content = "RewriteEngine On\n" .
                    "RewriteCond %{REQUEST_FILENAME} !-f\n" .
                    "RewriteCond %{REQUEST_FILENAME} !-d\n" .
@@ -90,15 +105,17 @@ extern "C" {
     }
 
     /**
-     * Generates starter files to help the developer begin immediately
+     * Generates initial view files
      */
-    private static function generateBoilerplate(): void {
-        $viewPath = 'views/welcome.php';
+    private static function generateBoilerplate(string $root): void {
+        $viewPath = $root . '/views/welcome.php';
         if (!file_exists($viewPath)) {
             $html = "\n" .
-                    "<div style='font-family: sans-serif; text-align: center; margin-top: 50px;'>\n" .
-                    "  <h1>Welcome to PHP++</h1>\n" .
-                    "  <p>Status: <span style='color: green;'>Running with Auto-Compiled C++ Core</span></p>\n" .
+                    "<div style='font-family: system-ui, sans-serif; text-align: center; padding: 50px;'>\n" .
+                    "  <h1 style='color: #2c3e50;'>Welcome to PHP++ (P++)</h1>\n" .
+                    "  <p style='color: #7f8c8d;'>Status: <strong style='color: #27ae60;'>C++ Core Active</strong></p>\n" .
+                    "  <hr style='width: 100px; border: 1px solid #eee;'>\n" .
+                    "  <p>Edit this file in <code>views/welcome.php</code></p>\n" .
                     "</div>";
             file_put_contents($viewPath, $html);
         }
