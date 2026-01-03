@@ -42,18 +42,24 @@ class Router {
     }
 
     /**
-     * Smart Dispatcher: Auto-checks for changes and executes routes
+     * Smart Dispatcher: Auto-compiles and executes routes with logging
      */
     public static function dispatch() {
         $cacheFile = 'cache/routes_compiled.php';
         $sourceFile = 'index.php';
 
-        // FEATURE: Zero-Config Auto-Build
-        // If the cache is missing or index.php was modified, re-compile instantly
+        // FEATURE: Zero-Config Auto-Build & Performance Logging
         if (!file_exists($cacheFile) || (file_exists($sourceFile) && filemtime($sourceFile) > filemtime($cacheFile))) {
-            // Check if Compiler class exists before calling to prevent errors
             if (class_exists(__NAMESPACE__ . '\\Compiler')) {
+                $start = microtime(true);
                 Compiler::build();
+                $end = microtime(true);
+                
+                // Calculate compilation duration in milliseconds
+                $duration = round(($end - $start) * 1000, 4);
+                
+                // Inform the developer via HTTP Headers (Visible in Network Tab)
+                header("X-PHP-Plus-Plus-Status: Re-compiled in {$duration}ms");
             }
         }
 
@@ -65,11 +71,14 @@ class Router {
             return;
         }
 
+        // Iterate through patterns to find a match
         foreach (self::$routes[$method] as $pattern => $callback) {
             if (preg_match($pattern, $uri, $matches)) {
+                // Extract only the named parameters from the matches
                 $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
                 
                 if (is_callable($callback)) {
+                    // Execute callback with dynamic parameters
                     echo call_user_func_array($callback, $params);
                     return;
                 }
