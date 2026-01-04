@@ -98,20 +98,20 @@ Developed  by Mahmoud Busaleh.
 
 If you like this project, give it a ⭐ on GitHub! Feel free to fork and submit pull requests to make PHP++ even faster.
 
-## 🏆 Hall of Fame (Contributors)
+## 🤝 Join the Journey (Contributors)
 
-**PHP++** is built by the community, for the community. We believe that every line of code tells a story, and every developer deserves their spot in the sun. ☀️
+**PHP++** isn't just a project; it's a movement. We are building the future of PHP together, and we want **YOU** to be a part of this story. Whether it's a major feature or a small fix, every contribution is a milestone.
 
-If you contribute something unforgettable to this project—be it a feature, a fix, or a brilliant idea—we want to make sure your legacy is preserved!
+### 🌟 Leave Your Mark
+We believe in giving credit where it's due. If you add something special to this repo, make sure to immortalize your name and your GitHub profile right here.
 
-### How to leave your mark:
-1. **Contribute:** Submit a Pull Request with your awesome code.
-2. **Claim your spot:** Add your name, a brief description of your contribution, and your GitHub profile link to the table below.
-
-| Developer | Contribution | GitHub Profile |
-| :--- | :--- | :--- |
-| **Mahmoud Busaleh** | Project Founder & Visionary | [@Mahmoudbusaleh](https://github.com/Mahmoudbusaleh) |
-| *Your Name* | *Your Amazing Work* | *[Your Link]* |
+**Project Founder:** * **Mahmoud Busaleh** ([@Mahmoudbusaleh](https://github.com/Mahmoudbusaleh)) - *The visionary behind the PHP++ evolution.*
 
 ---
-*“Code is immortal, and so is the developer who writes it.”* 🚀
+
+### 🏆 Contributors Hall of Fame
+
+| Contributor Name | What they added | GitHub Link |
+
+---
+*“Great things in coding are never done by one person; they are done by a team of dreamers.”* 🚀
