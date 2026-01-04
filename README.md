@@ -1,7 +1,6 @@
 <p align="center">
-  <img src="images/phplogo.png" alt="PHP++ Logo" width="250">
+  <img src="images/phpplusplus.png" alt="PHP++ Logo" width="250">
   <br>
-  <b>تطوير برمجيات PHP بأسلوب عصري وأداء أقوى</b>
 </p>
 # ⚡ PHP++ Web Engine
 **The World's First Hybrid PHP Framework with a Compiled C++ Core.**
