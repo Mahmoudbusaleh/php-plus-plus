@@ -9,7 +9,7 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Engine](https://img.shields.io/badge/Core-C++%20%2F%20FFI-blue.svg)]()
 
-PHP++ (P++) is a revolutionary web engine designed to break the performance limits of traditional PHP. By leveraging **PHP FFI (Foreign Function Interface)**, P++ offloads heavy string matching and routing logic to a **highly optimized C++ binary**, delivering near-native execution speeds.
+PHP++  is a revolutionary web engine designed to break the performance limits of traditional PHP. By leveraging **PHP FFI (Foreign Function Interface)**, P++ offloads heavy string matching and routing logic to a **highly optimized C++ binary**, delivering near-native execution speeds.
 
 ---
 
