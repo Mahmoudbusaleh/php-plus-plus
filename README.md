@@ -92,8 +92,26 @@ Bootstrapping,Moderate,Instant,Self-Optimizing
 
 ## 🤝 Contribution & Support
 
-Developed with ❤️ by Mahmoud Busaleh.
+Developed  by Mahmoud Busaleh.
+
+
 
 If you like this project, give it a ⭐ on GitHub! Feel free to fork and submit pull requests to make PHP++ even faster.
 
+## 🏆 Hall of Fame (Contributors)
 
+**PHP++** is built by the community, for the community. We believe that every line of code tells a story, and every developer deserves their spot in the sun. ☀️
+
+If you contribute something unforgettable to this project—be it a feature, a fix, or a brilliant idea—we want to make sure your legacy is preserved!
+
+### How to leave your mark:
+1. **Contribute:** Submit a Pull Request with your awesome code.
+2. **Claim your spot:** Add your name, a brief description of your contribution, and your GitHub profile link to the table below.
+
+| Developer | Contribution | GitHub Profile |
+| :--- | :--- | :--- |
+| **Mahmoud Busaleh** | Project Founder & Visionary | [@Mahmoudbusaleh](https://github.com/Mahmoudbusaleh) |
+| *Your Name* | *Your Amazing Work* | *[Your Link]* |
+
+---
+*“Code is immortal, and so is the developer who writes it.”* 🚀
