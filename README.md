@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="images/logo.png" alt="PHP++ Logo" width="250">
+  <img src="images/phplogo.png" alt="PHP++ Logo" width="250">
   <br>
   <b>تطوير برمجيات PHP بأسلوب عصري وأداء أقوى</b>
 </p>
